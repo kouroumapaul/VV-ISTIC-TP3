@@ -15,3 +15,26 @@ Include the improved test code in this file.
 
 ## Answer
 
+Nous avons vu en cours plusieurs tests smells : 
+
+- UnitTestContainsTooManyAsserts : Detecte si un cas de tests contient plusieurs assertions (Ce qui ne doit pas être fait)
+- UnitTestAssertionsShouldIncludeMessage : Detecte qu'une assertion inclue bien un message informatif
+
+Nous avons utiliser la règle sur le projet `Common Collection`
+
+- Voici un extrait des resultats pour la règle `UnitTestContainsTooManyAsserts` (Le resultat complet se trouve dans le fichier pmd-report)
+
+```
+.\commons-collections\src\test\java\org\apache\commons\collections4\AbstractArrayListTest.java:40:	UnitTestContainsTooManyAsserts:	Unit tests should not contain more than 1 assert(s).
+.\commons-collections\src\test\java\org\apache\commons\collections4\AbstractArrayListTest.java:50:	UnitTestContainsTooManyAsserts:	Unit tests should not contain more than 1 assert(s).
+.\commons-collections\src\test\java\org\apache\commons\collections4\AbstractLinkedListTest.java:86:	UnitTestContainsTooManyAsserts:	Unit tests should not contain more than 1 assert(s).
+```
+Pour resoudre, il faut juste utiliser une seule assertion par cas de tests 
+
+
+- Pour la règle `UnitTestAssertionsShouldIncludeMessage` pmd check n'a donné aucun resultat, ce qui signe que toutes les assertions de tests dans Common Collection incluent des messages
+
+
+
+
+

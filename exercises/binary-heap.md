@@ -40,3 +40,133 @@ Use the following steps to design the test suite:
 Use the project in [tp3-heap](../code/tp3-heap) to complete this exercise.
 
 ## Answer
+
+# 1 Input Space Partitioning
+
+Caractéristiques communes à toutes les méthodes :
+1. État du tas
+   - Tas vide
+   - Tas avec un seul élément
+   - Tas avec plusieurs éléments (>1 éléments)
+
+Analyse par méthode :
+
+1. push(T element)
+- Valeur de l'élément par rapport aux éléments existants (quand le tas n'est pas vide)
+  * Plus petit que tous les éléments existants
+  * Plus grand que tous les éléments existants
+  * Valeur intermédiaire entre les éléments existants
+- Nullité de l'élément
+  * Élément null
+  * Élément non-null
+
+2. pop()
+Caractéristiques :
+- Structure après le pop
+  * Nécessite heapifyDown (quand la racine supprimée avait des enfants)
+  * Pas besoin de heapifyDown (quand on supprime le dernier élément)
+
+3. peek()
+- Pas de caractéristiques spécifiques supplémentaires car il lit uniquement la racine
+
+4. count()
+Caractéristiques :
+- Pas de caractéristiques spécifiques supplémentaires car retourne simplement la taille
+
+
+- Voici quelques tests (La suite dans le fichier BinaryHeapTest.java)
+
+```java
+@Test
+    void count_shouldReturnZero_whenHeapIsEmpty() {
+        assertEquals(0, heap.count());
+    }
+
+    @Test
+    void count_shouldReturnOne_whenHeapHasOneElement() {
+        heap.push(1);
+        assertEquals(1, heap.count());
+    }
+
+    @Test
+    void count_shouldReturnCorrectSize_whenHeapHasMultipleElements() {
+        heap.push(1);
+        heap.push(2);
+        heap.push(3);
+        assertEquals(3, heap.count());
+    }
+
+    // Tests pour peek()
+    @Test
+    void peek_shouldThrowException_whenHeapIsEmpty() {
+        assertThrows(NoSuchElementException.class, () -> heap.peek());
+    }
+
+    @Test
+    void peek_shouldReturnElement_whenHeapHasOneElement() {
+        heap.push(1);
+        assertEquals(1, heap.peek());
+    }
+
+    @Test
+    void peek_shouldReturnSmallestElement_whenHeapHasMultipleElements() {
+        heap.push(3);
+        heap.push(1);
+        heap.push(2);
+        assertEquals(1, heap.peek());
+    }
+
+    // Tests pour push()
+    @Test
+    void push_shouldAddElement_whenHeapIsEmpty() {
+        heap.push(1);
+        assertEquals(1, heap.peek());
+    }
+```
+
+
+# 2 Coverage
+
+Suite à la conception des tests basés sur l'ISP, Voici la couverture de code obtenue :
+
+![Resultat du coverage](../images/coverage%20heap.PNG)
+
+Nous avons une couverture de 100%. A première vue, pas besoin de rajouter de tests supplementaires. L'utilisation des mutations plus tard nous dira s'il y'a des cas qu'on peut encore couvrir avec des tests
+
+
+# 3
+
+
+Dans la méthode `heapifyDown`,
+```java
+if (leftChild < size && comparator.compare(heap.get(leftChild), heap.get(smallest)) < 0)
+```
+et
+```java
+if (rightChild < size && comparator.compare(heap.get(rightChild), heap.get(smallest)) < 0)
+```
+
+Ces prédicats sont similaires et contiennent chacun deux opérateurs (&&). Comme ils n'ont que deux opérateurs booléens, ils ne nécessitent pas d'analyse Base Choice Coverage.
+
+
+
+# PIT
+
+Resultat de PIT
+![Resultat de PIT](../images/pit%20heap.PNG)
+
+D'après le resultat de PIT, on a 4 mutants qui restent en vie, on peut rajouter des tests supplementaires pour essayer de tuer ces mutants
+
+![Mutant survivant](../images/mutant%20heap.PNG)
+
+L'analyse des mutants survivants du tas binaire (BinaryHeap), nous avons identifié quatre mutants qui ont survécu aux tests :
+
+Pour le mutant index > 0 → index >= 0 :
+
+Nous avons réussi à tuer ce mutant avec un test qui force des échanges jusqu'à la racine
+Le mutant aurait causé une IndexOutOfBoundsException en tentant d'accéder à l'index -1
+
+![Mutant mis à jour](../images/mutant%202%20heap.PNG)
+
+
+
